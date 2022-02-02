@@ -1,0 +1,20 @@
+{
+  "name": "microservices-assignment",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "nodemon gateway.js",
+    "start": "node gateway.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.25.0",
+    "dotenv": "^15.0.0",
+    "express": "^4.17.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}

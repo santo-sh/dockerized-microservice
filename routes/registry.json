@@ -1,0 +1,22 @@
+{
+    "services":{
+        "usersApi":{
+            "apiName":"userApi",
+            "host": "http://localhost",
+            "port": "3100",
+            "url": "http://localhost:3100/"
+        },
+        "contentApi":{
+            "apiName":"contentApi",
+            "host": "http://localhost",
+            "port": "3200",
+            "url": "http://localhost:3200/"
+        },
+        "interactionApi":{
+            "apiName":"interactionApi",
+            "host": "http://localhost",
+            "port": "3300",
+            "url": "http://localhost:3300/"
+        }        
+    }
+}
