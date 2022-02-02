@@ -7,7 +7,10 @@ const app = express()
 app.use(express.json())
 const port = process.env.PORT4 || 3400
 console.log(port)
-mongoose.connect('mongodb://localhost:27017/authDB')
+mongoose.connect('mongodb://localhost:27017/authDB',{
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
 
 app.post('/', (req, res)=>{
     const user_id = req.query.user_id
@@ -26,16 +29,22 @@ app.post('/', (req, res)=>{
 })
 
 app.get('/', async(req, res)=>{
-    // const user_id = req.query.user_id
     const token = req.query.token
     try{
         const decoded = jwt.verify(token, 'thisissecret')
-        console.log(decoded)
+        // if(decoded.message === 'jwt expired'){
+        //     return res.json({message: decoded.message})
+        // }
         const user = await Auth.findOne({user_id: decoded._id, 'tokens.token':token})
         if(!user){
             res.status(404)
             return res.json({message: "User not found!!!"})
         }
+        res.userData = {
+            user_id: decoded._id,
+            token: token
+        }
+        console.log(req.userData)
         res.json(user)
     }catch(err){
         res.json({message: err.message})
@@ -43,11 +52,10 @@ app.get('/', async(req, res)=>{
 })
 
 app.delete('/', async(req, res)=>{
-    const user_id = req.query.user_id
     const token = req.query.token
     try{
         const decoded = jwt.verify(token, 'thisissecret')
-        const user = await Auth.findOneAndDelete({user_id, 'tokens.token':token})
+        const user = await Auth.findOneAndDelete({user_id: decoded._id, 'tokens.token':token})
         console.log(user)
         if(!user){
             res.status(404)
