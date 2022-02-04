@@ -13,25 +13,19 @@ mongoose.connect('mongodb://localhost:27017/authDB',{
 })
 
 app.post('/', (req, res)=>{
-    console.log("new token request!!")
-    try{
-        const user_id = req.query.user_id
-        const token = req.query.token
-        const newAuth = new Auth({
-            user_id: user_id,
+    const user_id = req.query.user_id
+    const token = req.query.token
+    const newAuth = new Auth({
+        user_id: user_id,
+    })
+    newAuth.tokens = newAuth.tokens.concat({token})
+    newAuth.save()
+        .then(()=>{
+            console.log(newAuth)
+            res.json({message: "authToken created successfully"})
         })
-        newAuth.tokens = newAuth.tokens.concat({token})
-        newAuth.save()
-            .then(()=>{
-                console.log(newAuth)
-                res.json({message: "authToken created successfully"})
-            })
-            .catch(err=>{
-                throw Error(err)
-            })
-    }catch(err){
-        res.json({message: err.message})
-    }
+        .catch(err=>res.json({message: err.message}))
+
 })
 
 app.get('/', async(req, res)=>{
@@ -45,6 +39,11 @@ app.get('/', async(req, res)=>{
             // res.status(404)
             return res.json({message: "Token not valid!!!"})
         }
+        res.userData = {
+            user_id: decoded._id,
+            token: token
+        }
+        console.log(req.userData)
         res.json(user)
     }catch(err){
         res.json({message: err.message})

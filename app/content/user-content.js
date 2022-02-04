@@ -26,7 +26,7 @@ app.use('/upload-csv', router)
 
 const upload = multer({ dest: './' })
 
-app.post('/uploadContent/',upload.single('uploaded_file'), (req, res)=>{
+app.post('/uploadContent/',auth,upload.single('uploaded_file'), (req, res)=>{
     const file = req.file
     console.log(file.filename)
     if(!file){

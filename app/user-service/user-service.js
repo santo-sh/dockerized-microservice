@@ -34,9 +34,8 @@ const generateAuthToken = async (user)=>{
     return token
 }
 
-app.get('/users',auth, (req, res)=>{
+app.get('/users', auth ,(req, res)=>{
     try{
-        console.log("I am in users")
         User.find()
         .then(users=>res.json(users))
         .catch(err=>{
@@ -69,7 +68,8 @@ app.post('/login', async(req, res)=>{
                 if(response.data['message'].includes('failed')){
                     res.json({message: response.data['message']})
                 }else{
-                    res.status(201).json({user, token, user_id:user._id})
+                    console.log(token)
+                    res.status(201).json({user, token})
                 }
             })
             .catch((err)=>{
@@ -102,16 +102,14 @@ app.post('/signup', async(req, res)=>{
             axios.post(`http://localhost:3400/?user_id=${newUser._id}&token=${token}`)
             .then((response)=>{
                 if(response.data['message'].includes('failed')){
-                    // res.json({message: response.data['message']})
-                    throw Error(response.data)
+                    res.json({message: response.data['message']})
                 }else{
                     console.log(token)
-                    req.headers.authorization = ""
-                    res.status(201).json({newUser, token, user_id: newUser._id})
+                    res.status(200).json({newUser, token})
                 }
             })
             .catch((err)=>{
-                throw Error(err)
+                res.json({message: err.message})
             })
         })
         .catch(err=>res.json({message: err.message}))
@@ -153,7 +151,7 @@ app.delete('/users/',auth, async(req, res)=>{
         if(user === null){
             return res.json({message: "Nothing to delete!!!"})
         }
-        axios.delete(`http://localhost:3200/deleteall/?user_id=${user._id}`)
+        axios.delete(`http://localhost:3000/contentApi/deleteall/?user_id=${user._id}`)
             .then((response)=>{
                 console.log(response.data)
             })
@@ -161,7 +159,7 @@ app.delete('/users/',auth, async(req, res)=>{
                 throw Error(err)
             })
             .then(()=>{
-                axios.delete(`http://localhost:3400/?token=${req.query.token}`)
+                axios.delete(`http://localhost:3400/?token=${token}`)
                 .catch(err=>{
                     // return res.json({message: err.message})
                     throw Error(err)
@@ -177,7 +175,7 @@ app.delete('/users/',auth, async(req, res)=>{
     }
 })
 
-app.get('/logout',auth, (req, res)=>{
+app.get('/logout', auth, (req, res)=>{
     const token = req.query.token
     console.log(token)
     try{

@@ -21,13 +21,13 @@ mongoose.connect('mongodb://localhost:27017/userInteractionDB',{
 //         .catch(err=>res.json({message: err.message}))
 // })
 
-app.get("/all/", (req, res)=>{
+app.get("/all/",auth, (req, res)=>{
     UserInteraction.find().sort([[`${req.query.type}`, -1]])
         .then((contents)=>res.json(contents))
         .catch(err=>res.json({message: err.message}))
 })
 
-app.get("/interaction", async(req, res)=>{
+app.get("/interaction",auth, async(req, res)=>{
     try{
         let content = await UserInteraction.findOne({content_id: req.query.content_id})
         if(content == null){
@@ -39,7 +39,7 @@ app.get("/interaction", async(req, res)=>{
     }
 })
 
-app.post('/interaction', (req, res)=>{
+app.post('/interaction',auth, (req, res)=>{
     console.log("a new request")
     const newUserInteration = new UserInteraction({
         content_id: req.query.content_id,
@@ -51,7 +51,7 @@ app.post('/interaction', (req, res)=>{
         .catch(err=>res.json({message: err.message}))
 })
 
-app.delete("/interaction/", async(req, res)=>{
+app.delete("/interaction/",auth, async(req, res)=>{
     console.log(req.query.content_id)
     try{
         let content = await UserInteraction.findOneAndDelete({content_id: req.query.content_id})
@@ -63,7 +63,7 @@ app.delete("/interaction/", async(req, res)=>{
     }
 })
 
-app.post("/like/", async(req, res)=>{
+app.post("/like/",auth, async(req, res)=>{
     try{
         let content = await UserInteraction.findOne({content_id: req.query.content_id})
         if(content == null){
@@ -77,7 +77,7 @@ app.post("/like/", async(req, res)=>{
     }
     
 })
-app.post("/read/", async(req, res)=>{
+app.post("/read/",auth, async(req, res)=>{
     try{
         let content = await UserInteraction.findOne({content_id: req.query.content_id})
         if(content == null){
@@ -90,6 +90,8 @@ app.post("/read/", async(req, res)=>{
         res.json(err=>res.json({message: err.message}))
     }
 })
+
+
 
 app.listen(port, ()=>{
     console.log(`Server is running at port: ${port}`)

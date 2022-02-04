@@ -11,11 +11,31 @@ router.all('/:apiName/:path', (req, res)=>{
     if(registry.services[req.params.apiName] === undefined){
         return res.send("API Name doesn't exist")
     }
+    const request = {
+        method: req.method,
+        url: registry.services[req.params.apiName].url+req.params.path,
+        data:  req.body,
+        headers: req.headers,
+        params: req.params,
+        query: req.query
+    }
+    if(req.headers['authorization'] !== undefined){
+        axios.interceptors.request.use(
+        config=>{
+            config.headers.authorization = req.headers['authorization']
+            return config
+        },
+        error=>{
+            return Promise.reject(error)
+        })
+    }
+    console.log(req.headers)
     axios({
         method: req.method,
         url: registry.services[req.params.apiName].url+req.params.path,
         data:  req.body,
         params: req.query,
+        // headers: req.headers,
     })
     .then((response)=>res.json(response.data))
     .catch((err)=>res.json({message: err.message}))
