@@ -2,10 +2,6 @@ const axios = require('axios')
 
 const auth = async(req, res, next)=>{
     try{
-        console.log(req)
-        console.log(req.rawHeaders)
-        // console.log(req.cookies.token)s
-
         const token = req.query.token
         if(token === undefined){
             throw Error("Login or Signup to generate a token!!")

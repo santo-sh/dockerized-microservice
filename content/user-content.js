@@ -26,13 +26,12 @@ app.use('/upload-csv', router)
 
 const upload = multer({ dest: './' })
 
-app.post('/uploadContent/',upload.single('uploaded_file'), (req, res)=>{
+app.post('/uploadContent/',auth,upload.single('uploaded_file'), (req, res)=>{
     const file = req.file
     console.log(file.filename)
     if(!file){
-        const error = new Error('Please upload a file')
-        error.httpStatusCode = 400
-        return res.json(error)
+
+        return res.json({message: "Please upload a csv file"})
     }
     console.log(req.user)
     try{

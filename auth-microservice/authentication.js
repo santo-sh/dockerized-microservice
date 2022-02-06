@@ -53,6 +53,7 @@ app.get('/', async(req, res)=>{
 
 app.delete('/', async(req, res)=>{
     const token = req.query.token
+    console.log(token)
     try{
         const decoded = jwt.verify(token, 'thisissecret')
         const user = await Auth.findOneAndDelete({user_id: decoded._id, 'tokens.token':token})

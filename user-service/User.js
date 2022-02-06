@@ -30,13 +30,7 @@ const UserSchema = mongoose.Schema({
     phone_no:{
         type: Number,
         required: false
-    },
-    tokens:[{
-        token:{
-            type: String,
-            required: true
-        }
-    }]
+    }
 })
 
 const User = mongoose.model('User', UserSchema)

@@ -29,8 +29,6 @@ mongoose.connect('mongodb://localhost:27017/userDB',{
 
 const generateAuthToken = async (user)=>{
     const token = jwt.sign({_id: user._id}, 'thisissecret', {expiresIn: '10h'})
-    user.tokens = user.tokens.concat({token})
-    await user.save()
     return token
 }
 

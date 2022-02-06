@@ -11,6 +11,7 @@ router.all('/:apiName/:path', (req, res)=>{
     if(registry.services[req.params.apiName] === undefined){
         return res.send("API Name doesn't exist")
     }
+    console.log(req.query)
     axios({
         method: req.method,
         url: registry.services[req.params.apiName].url+req.params.path,
